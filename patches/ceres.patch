@@ -1,0 +1,20 @@
+diff --git a/ceres.py b/ceres.py
+index d46a020..97fb319 100644
+--- a/ceres.py
++++ b/ceres.py
+@@ -343,6 +344,7 @@ class CeresNode(object):
+       if fromTime >= slice.startTime:
+         try:
+           series = slice.read(fromTime, untilTime)
++          if self.timeStep < slice.timeStep: self.timeStep = slice.timeStep
+         except NoData:
+           break
+ 
+@@ -358,6 +360,7 @@ class CeresNode(object):
+         # Split the request up if it straddles a slice boundary
+         if (sliceBoundary is not None) and untilTime > sliceBoundary:
+           requestUntilTime = sliceBoundary
++          if self.timeStep < slice.timeStep: self.timeStep = slice.timeStep
+         else:
+           requestUntilTime = untilTime
+ 
