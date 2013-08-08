@@ -343,6 +343,7 @@ class CeresNode(object):
       if fromTime >= slice.startTime:
         try:
           series = slice.read(fromTime, untilTime)
+          if self.timeStep < slice.timeStep: self.timeStep = slice.timeStep
         except NoData:
           break
 
@@ -358,6 +359,7 @@ class CeresNode(object):
         # Split the request up if it straddles a slice boundary
         if (sliceBoundary is not None) and untilTime > sliceBoundary:
           requestUntilTime = sliceBoundary
+          if self.timeStep < slice.timeStep: self.timeStep = slice.timeStep
         else:
           requestUntilTime = untilTime
 
