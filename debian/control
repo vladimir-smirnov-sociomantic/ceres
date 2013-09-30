@@ -1,0 +1,11 @@
+Source: ceres
+Section: misc
+Priority: extra
+Maintainer: Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: ceres
+Architecture: all
+Depends: python-nose, python-mock
+Description: graphs db lib
