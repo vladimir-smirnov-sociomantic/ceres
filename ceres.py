@@ -444,6 +444,7 @@ class CeresNode(object):
           leftover = sequence[:boundaryIndex]
           sequences.append(leftover)
           slice.write(sequenceWithinSlice)
+          break
 
         else:
           needsEarlierSlice.append(sequence)
