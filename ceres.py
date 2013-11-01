@@ -19,6 +19,7 @@ import os
 import struct
 import json
 import errno
+import time
 from math import isnan
 from itertools import izip
 from os.path import isdir, exists, join, dirname, abspath, getsize, getmtime
@@ -327,6 +328,7 @@ class CeresNode(object):
            ((untilTime is None) or (untilTime > earliestData))
 
   def read(self, fromTime, untilTime):
+    # get biggest timeStep 
     if self.timeStep is None:
       self.readMetadata()
 
@@ -338,18 +340,28 @@ class CeresNode(object):
     resultValues = []
     earliestData = None
 
+    # calculate biggest timeStep in slices with data in requested period
+    biggest_timeStep = 1
+    for slice_tmp in self.slices:
+      if fromTime >= slice_tmp.startTime:
+        if biggest_timeStep < slice_tmp.timeStep: biggest_timeStep = slice_tmp.timeStep
+        break
+      elif untilTime >= slice_tmp.startTime:
+        if biggest_timeStep < slice_tmp.timeStep: biggest_timeStep = slice_tmp.timeStep
+
     for slice in self.slices:
       # if the requested interval starts after the start of this slice
       if fromTime >= slice.startTime:
         try:
           series = slice.read(fromTime, untilTime)
-          if self.timeStep < slice.timeStep: self.timeStep = slice.timeStep
+          if slice.timeStep < biggest_timeStep:
+            series.values = recalculateSeries(series.values, slice.timeStep, biggest_timeStep)
         except NoData:
           break
 
         earliestData = series.startTime
 
-        rightMissing = (untilTime - series.endTime) / self.timeStep
+        rightMissing = (untilTime - series.endTime) / biggest_timeStep
         rightNulls = [None for i in range(rightMissing - len(resultValues))]
         resultValues = series.values + rightNulls + resultValues
         break
@@ -359,18 +371,19 @@ class CeresNode(object):
         # Split the request up if it straddles a slice boundary
         if (sliceBoundary is not None) and untilTime > sliceBoundary:
           requestUntilTime = sliceBoundary
-          if self.timeStep < slice.timeStep: self.timeStep = slice.timeStep
         else:
           requestUntilTime = untilTime
 
         try:
           series = slice.read(slice.startTime, requestUntilTime)
+          if slice.timeStep < biggest_timeStep:
+            series.values = recalculateSeries(series.values, slice.timeStep, biggest_timeStep)
         except NoData:
           continue
 
         earliestData = series.startTime
 
-        rightMissing = (requestUntilTime - series.endTime) / self.timeStep
+        rightMissing = (requestUntilTime - series.endTime) / biggest_timeStep
         rightNulls = [None for i in range(rightMissing)]
         resultValues = series.values + rightNulls + resultValues
 
@@ -379,16 +392,15 @@ class CeresNode(object):
 
     # The end of the requested interval predates all slices
     if earliestData is None:
-      missing = int(untilTime - fromTime) / self.timeStep
-      resultValues = [None for i in range(missing)]
+      missing = int(untilTime - fromTime) / biggest_timeStep
+      resultValues = [None for i in range(missing)] 
 
     # Left pad nulls if the start of the requested interval predates all slices
     else:
-      leftMissing = (earliestData - fromTime) / self.timeStep
+      leftMissing = (earliestData - fromTime) / biggest_timeStep
       leftNulls = [None for i in range(leftMissing)]
       resultValues = leftNulls + resultValues
-
-    return TimeSeriesData(fromTime, untilTime, self.timeStep, resultValues)
+    return TimeSeriesData(fromTime, untilTime, biggest_timeStep, resultValues)
 
   def write(self, datapoints):
     if self.timeStep is None:
@@ -695,6 +707,19 @@ class SliceGapTooLarge(Exception):
 class SliceDeleted(Exception):
   pass
 
+def recalculateSeries(values, old_timeStep, new_timeStep):
+  factor = int(new_timeStep/old_timeStep)
+  new_values = []
+  for j in [values[i:i+2] for i in range(0, len(values), factor)]:
+    sub_arr = []
+    for v in j:
+      if not v:
+        sub_arr.append(0)
+      else:
+        sub_arr.append(v)
+
+    new_values.append(reduce(lambda x, y: x + y, sub_arr)/(len(sub_arr)*1.0))
+  return new_values
 
 def getTree(path):
   while path not in (os.sep, ''):
