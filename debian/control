@@ -1,11 +1,14 @@
-Source: ceres
+Source: yabs-ceres
 Section: misc
 Priority: extra
-Maintainer: Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>
-Build-Depends: debhelper (>= 5)
-Standards-Version: 3.7.2
+Maintainer: Anna Sysoeva <antrue@yandex-team.ru>
+Build-Depends: debhelper (>= 8.0.0), cdbs
+Standards-Version: 3.9.3
+Homepage: http://github.com/graphite-project/ceres.git
 
-Package: ceres
+Package: yabs-ceres
 Architecture: all
-Depends: python-nose, python-mock
-Description: graphs db lib
+Depends: ${python:Depends}, ${misc:Depends},
+        python-mock (>= 1.0.1), python-nose(>= 1.2.1), megacarbon
+Description: Data storage library 
+ The new Ceres back-end for Graphite is addresses a lot the issues that Whisper had, but you don’t get them for free – you’ve got to work for it.

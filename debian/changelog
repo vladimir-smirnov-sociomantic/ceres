@@ -1,6 +1,60 @@
-ceres (0.10.0) unstable; urgency=low
+yabs-ceres (0.5.4) unstable; urgency=low
 
-  * initial
+  * another way to fix consolidated data viewing bug 
 
- -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Wed, 24 Jul 2013 18:56:53 +0400
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Fri, 04 Oct 2013 16:26:19 +0400
 
+yabs-ceres (0.5.3) unstable; urgency=low
+
+  * and another one fix for consolidated data 
+
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Thu, 03 Oct 2013 18:32:07 +0400
+
+yabs-ceres (0.5.2) unstable; urgency=low
+
+  * fixed bug with rendering consolidated data with unconsolidated, one more
+    try
+
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Thu, 03 Oct 2013 18:02:24 +0400
+
+yabs-ceres (0.5.1) unstable; urgency=low
+
+  * fixed bug with rendering consolidated data with unconsolidated
+
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Thu, 03 Oct 2013 15:35:45 +0400
+
+yabs-ceres (0.5.0) unstable; urgency=low
+
+  * fixed memory leak
+
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Wed, 21 Aug 2013 13:14:48 +0400
+
+yabs-ceres (0.4.1) unstable; urgency=low
+
+  * fixed timeStep 
+
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Mon, 05 Aug 2013 14:26:00 +0400
+
+yabs-ceres (0.4) configs; urgency=low
+
+  * postinst added 
+
+ -- Anna Sysoeva <antrue@yandex-team.ru>  Tue, 23 Jul 2013 20:19:36 +0400
+
+yabs-ceres (0.3) configs; urgency=low
+
+  * missed ceres.py fixed 
+
+ -- Anna Sysoeva <antrue@yandex-team.ru>  Fri, 05 Jul 2013 19:10:30 +0400
+
+yabs-ceres (0.2) configs; urgency=low
+
+  *depends fixed 
+
+ -- Anna Sysoeva <antrue@yandex-team.ru>  Thu, 04 Jul 2013 22:25:30 +0400
+
+yabs-ceres (0.1) configs; urgency=low
+
+  * Initial Release.
+
+ -- Anna Sysoeva <antrue@yandex-team.ru>  Thu, 04 Jul 2013 18:11:04 +0400
