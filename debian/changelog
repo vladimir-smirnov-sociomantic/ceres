@@ -1,3 +1,9 @@
+yabs-ceres (0.5.4.2) unstable; urgency=low
+
+  * rebuild 
+
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Wed, 04 Dec 2013 21:41:44 +0400
+
 yabs-ceres (0.5.4) unstable; urgency=low
 
   * another way to fix consolidated data viewing bug 
