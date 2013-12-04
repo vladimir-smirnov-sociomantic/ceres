@@ -4,3 +4,8 @@ docs/_build
 dist
 *.log
 *.pyc
+debian/files
+debian/yabs-ceres.postinst.debhelper
+debian/yabs-ceres.prerm.debhelper
+debian/yabs-ceres.substvars
+debian/yabs-ceres/
