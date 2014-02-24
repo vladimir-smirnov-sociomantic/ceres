@@ -713,12 +713,13 @@ def recalculateSeries(values, old_timeStep, new_timeStep):
   for j in [values[i:i+2] for i in range(0, len(values), factor)]:
     sub_arr = []
     for v in j:
-      if not v:
-        sub_arr.append(0)
-      else:
+      if v:
         sub_arr.append(v)
 
-    new_values.append(reduce(lambda x, y: x + y, sub_arr)/(len(sub_arr)*1.0))
+    if sub_arr:
+        new_values.append(reduce(lambda x, y: x + y, sub_arr)/(len(sub_arr)*1.0))
+    else:
+        new_values.append(0)
   return new_values
 
 def getTree(path):
