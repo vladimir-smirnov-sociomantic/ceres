@@ -1,3 +1,9 @@
+yabs-ceres (0.5.4.3) unstable; urgency=low
+
+  * fixed recalculateSeries function
+
+ -- Kulikovsky Dmitry <dkulikovsky@yandex-team.ru>  Mon, 24 Feb 2014 15:19:32 +0400
+
 yabs-ceres (0.5.4.2) unstable; urgency=low
 
   * rebuild 
