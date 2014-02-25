@@ -342,14 +342,24 @@ class CeresNode(object):
 
     # calculate biggest timeStep in slices with data in requested period
     biggest_timeStep = 1
+    slices_map = {}
     for slice_tmp in self.slices:
+      slices_map[slice_tmp.fsPath] = [slice_tmp.startTime, slice_tmp.endTime, slice_tmp.timeStep]
       if fromTime >= slice_tmp.startTime:
         if biggest_timeStep < slice_tmp.timeStep: biggest_timeStep = slice_tmp.timeStep
         break
       elif untilTime >= slice_tmp.startTime:
         if biggest_timeStep < slice_tmp.timeStep: biggest_timeStep = slice_tmp.timeStep
 
-    for slice in self.slices:
+    slices_arr = []
+    for slice_tmp in self.slices:
+      bogus = 0
+      for item in slices_map.values():
+        if slice_tmp.startTime > item[0] and slice_tmp.endTime < item[1]: 
+          bogus = 1
+      if not bogus: slices_arr.append(slice_tmp)
+
+    for slice in slices_arr:
       # if the requested interval starts after the start of this slice
       if fromTime >= slice.startTime:
         try:
