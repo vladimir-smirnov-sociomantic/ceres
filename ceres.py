@@ -716,20 +716,53 @@ class SliceGapTooLarge(Exception):
 class SliceDeleted(Exception):
   pass
 
-def recalculateSeries(values, old_timeStep, new_timeStep):
-  factor = int(new_timeStep/old_timeStep)
-  new_values = []
-  for j in [values[i:i+2] for i in range(0, len(values), factor)]:
-    sub_arr = []
-    for v in j:
-      if v:
-        sub_arr.append(v)
+def aggregate_avg(values):
+    """
+    Compute AVG for list of points.
+    :param values: list of values
+    :return:
+    """
+    length = len(values)
+    if length is 0:
+        return None
+    length_iter = range(length)
+    s = 0
+    nones = 0
+    for i in length_iter:
+        if values[i] is None:
+            length -= 1
+            nones += 1
+            if nones > length:
+                return None
+        else:
+            s += values[i]
+    agg = float(s) / length
+    return agg
 
-    if sub_arr:
-        new_values.append(reduce(lambda x, y: x + y, sub_arr)/(len(sub_arr)*1.0))
-    else:
-        new_values.append(0)
-  return new_values
+def recalculateSeries(values, old_timeStep, new_timeStep):
+    """
+    Recalculate values to the new timeStep.
+    :param values: list of the values
+    :param old_timeStep: previous timestep
+    :param new_timeStep: new timeStep value
+    :return: list of recalculated values
+    """
+    factor = int(new_timeStep/old_timeStep)
+
+    new_values = list()
+    sub_arr = list()
+    cnt = 0
+    for i in range(0, len(values)):
+        sub_arr.append(values[i])
+        cnt += 1
+        if cnt == factor:
+                new_values.append(aggregate_avg(sub_arr))
+                sub_arr = list()
+                cnt = 0
+    if len(sub_arr) > int(factor/4):
+        new_values.append(aggregate_avg(sub_arr))
+    return new_values
+
 
 def getTree(path):
   while path not in (os.sep, ''):
