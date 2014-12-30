@@ -324,8 +324,8 @@ class CeresNode(object):
     earliestData = slices[-1].startTime
     latestData = slices[0].endTime
 
-    return ((fromTime is None) or (fromTime < latestData)) and \
-           ((untilTime is None) or (untilTime > earliestData))
+    return ((fromTime is 0) or (fromTime is None) or (fromTime < latestData)) and \
+           ((untilTime is 0) or (untilTime is None) or (untilTime > earliestData))
 
   def read(self, fromTime, untilTime):
     # get biggest timeStep 
