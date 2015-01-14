@@ -329,8 +329,9 @@ class CeresNode(object):
 
   def read(self, fromTime, untilTime):
     # get biggest timeStep 
+    metadata = None
     if self.timeStep is None:
-      self.readMetadata()
+      metadata = self.readMetadata()
 
     # Normalize the timestamps to fit proper intervals
     fromTime = int(fromTime - (fromTime % self.timeStep))
@@ -355,7 +356,7 @@ class CeresNode(object):
     for slice_tmp in self.slices:
       bogus = 0
       for item in slices_map.values():
-        if slice_tmp.startTime > item[0] and slice_tmp.endTime < item[1]: 
+        if (slice_tmp.startTime > item[0] and slice_tmp.endTime < item[1]) or (slice_tmp.startTime > untilTime or slice_tmp.endTime < fromTime):
           bogus = 1
       if not bogus: slices_arr.append(slice_tmp)
 
@@ -402,6 +403,18 @@ class CeresNode(object):
 
     # The end of the requested interval predates all slices
     if earliestData is None:
+      if biggest_timeStep is 1:
+          now = int(time.time())
+          try:
+              biggest_timeStep = metadata["timeStep"]
+              tmp = 0
+              for ts in metadata["retentions"]:
+                  tmp += ts[0] * ts[1]
+                  if untilTime > now - tmp:
+                      break
+                  biggest_timeStep = ts[0]
+          except TypeError:
+              biggest_timeStep = DEFAULT_TIMESTEP
       missing = int(untilTime - fromTime) / biggest_timeStep
       resultValues = [None for i in range(missing)] 
 
